@@ -1,0 +1,14 @@
+#!/bin/sh
+
+IMDB_USER="ur34919593"
+
+# scrape the watchlist page and extract the json contents
+echo Accessing watchlist >&2
+WATCHLIST_JSON=$(curl -s "http://www.imdb.com/user/${IMDB_USER}/watchlist" | grep "IMDbReactInitialState.push" | egrep -o '\{.*\}')
+
+# extract the list of movies from the json blob
+echo Processing results >&2
+TITLES_JSON=$(echo $WATCHLIST_JSON | jq ".titles")
+
+echo Here is the list >&2
+echo $TITLES_JSON
