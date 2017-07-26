@@ -26,14 +26,14 @@ api_url = data['SHAKTI_API_ROOT'] + '/' + data['BUILD_IDENTIFIER']
 
 
 genres='0,"to":1'
-rmax='5'
+rmax='48'
 
 # tutorial example
-base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
+#base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
 # my list
 #  https://www.netflix.com/browse/my-list
-#base='[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
+base='[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
 # search for title
 #base='["search", "dawg%20fight", "titles", {from: 0, to: 48}, ["summary", "title"]],["search", "dawg%20fight", "titles", {from: 0, to: 48}, "boxarts", "_342x192", "webp"],["search", "dawg%20fight", "titles", ["id", "length", "name", "trackIds", "requestId"]]'
@@ -45,10 +45,8 @@ data='{"paths":'+base+'}'
 url = api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false';
 
 response=requests.post(url,data=data,headers=headers)
-
 rjson=response.json()
-
-print rjson
+#print rjson
 
 videos=rjson['value']['videos']
 for vid in videos:
