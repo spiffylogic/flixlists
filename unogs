@@ -80,6 +80,7 @@ video_id = '70003487'
 response = requests.get(unogs_url+'?t=loadvideo&q='+video_id, headers=unogs_headers)
 rjson = json.loads(response.content.replace('&quot;','"'))
 country_json = rjson['RESULT']['country']
-print country_json
-
+for j in country_json:
+    if j[1].lower() == 'ca':
+        print 'Available in Canada'
 
