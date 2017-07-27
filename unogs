@@ -59,6 +59,8 @@ response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materia
 rjson = response.json()
 
 # Parse netflix response
+print 'My List'
+print '-------'
 videos = rjson['value']['videos']
 for vid in videos:
     if vid.isnumeric():
@@ -67,5 +69,5 @@ for vid in videos:
         boxart = vo['boxarts']['_342x192']['jpg']['url']
         isplayable = vo['availability']['isPlayable']
         retjson = '{"netflixid":"'+str(vid)+'","title":"'+str(title)+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
-        print retjson
+        print title
 
