@@ -76,11 +76,18 @@ print "-------------------------------------"
 print ""
 
 # Get country info from uNoGS
-video_id = '70003487'
-response = requests.get(unogs_url+'?t=loadvideo&q='+video_id, headers=unogs_headers)
-rjson = json.loads(response.content.replace('&quot;','"'))
-country_json = rjson['RESULT']['country']
-for j in country_json:
-    if j[1].lower() == 'ca':
-        print 'Available in Canada'
+
+def isAvailableInCanada(video_id):
+    print video_id
+    response = requests.get(unogs_url+'?t=loadvideo&q='+video_id, headers=unogs_headers)
+    try:
+        rjson = json.loads(response.content.replace('&quot;','"'))
+        country_json = rjson['RESULT']['country']
+        for j in country_json:
+            if j[1].lower() == 'ca':
+                return True
+        return False
+    except ValueError:
+        pass
+    return False
 

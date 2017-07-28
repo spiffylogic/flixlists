@@ -4,6 +4,7 @@ import json;
 import requests;
 import re;
 from pprint import pprint;
+import unogs
 
 imdb_user = 'ur34919593'
 imdb_url = 'http://www.imdb.com'
@@ -52,8 +53,11 @@ for i in range(2*page_size):
         year_str = ' ('+primary_json['year'][0]+')'
     else:
         year_str = ''
-    print str(j)+": "+item_id+": "+title+year_str
 
+    ca = False
+    if j >= 10 and j < 60:
+        ca = unogs.isAvailableInCanada(item_id)
+    print str(j)+": "+item_id+": "+title+year_str+(' (NETFLIX)' if ca else '')
 
 # Subsequent pages are available from data endpoint
 for page in range(2, len(items) / page_size + 1):
