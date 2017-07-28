@@ -37,26 +37,39 @@ titles_json = react_json['titles']
 print("Found "+str(len(titles_json))+" titles in titles list")
 print("IMDb Watchlist")
 print("")
+
+page_size = 50
+
+# First 2 pages available in titles json
 j = 0
-for i in range(50):
+for i in range(2*page_size):
     j = j+1
     item_id = items[i]['const']
     primary_json = titles_json[item_id]['primary']
     title = primary_json['title']
-    year = primary_json['year'][0]
-    print(str(j)+": "+item_id+": "+title+' ('+year+')')
-
-ids = map(lambda x: x['const'], items[50:])
-url = imdb_url+'/title/data?ids='+','.join(ids)
-response = requests.get(url)
-data_json = response.json()
-for item_id in data_json:
-    j = j+1
-    primary_json = data_json[item_id]['title']['primary']
-    title = primary_json['title']
+    # Year not available for in-development films
     if 'year' in primary_json:
         year_str = ' ('+primary_json['year'][0]+')'
     else:
         year_str = ''
     print str(j)+": "+item_id+": "+title+year_str
+
+
+# Subsequent pages are available from data endpoint
+for page in range(2, len(items) / page_size + 1):
+    print "Page "+str(page)
+    ids = map(lambda x: x['const'], items[page*page_size:(page+1)*page_size])
+    url = imdb_url+'/title/data?ids='+','.join(ids)
+    response = requests.get(url)
+    data_json = response.json()
+    for item_id in data_json:
+        j = j+1
+        primary_json = data_json[item_id]['title']['primary']
+        title = primary_json['title']
+        # Year not available for in-development films
+        if 'year' in primary_json:
+            year_str = ' ('+primary_json['year'][0]+')'
+        else:
+            year_str = ''
+        print str(j)+": "+item_id+": "+title+year_str
 
