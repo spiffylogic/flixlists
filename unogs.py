@@ -2,6 +2,7 @@
 import json;
 import requests;
 import re;
+from pprint import pprint;
 
 # reference: https://forum.unogs.com/topic/9/part-2-a-simple-script-to-pull-information
 
@@ -47,20 +48,21 @@ rmax = '48'
 #base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
 # Netflix my list
-base = '[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
+#base = '[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
 # Netflix search
-#base = '["search", "dawg%20fight", "titles", {from: 0, to: 48}, ["summary", "title"]],["search", "dawg%20fight", "titles", {from: 0, to: 48}, "boxarts", "_342x192", "webp"],["search", "dawg%20fight", "titles", ["id", "length", "name", "trackIds", "requestId"]]'
-
+search = "intouchables"
+#base = '["search", "'+search+'", "titles", {from: 0, to: 48}, ["summary", "title"]],["search", "'+search'", "titles", {from: 0, to: 48}, "boxarts", "_342x192", "webp"],["search", "'+search+'", "titles", ["id", "length", "name", "trackIds", "requestId"]]'
+base = '[["search","'+search+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability"]],["search","'+search+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
 data = '{"paths":'+base+'}'
 
 # Netflix API request
 response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false', data=data, headers=netflix_headers)
 rjson = response.json()
+#pprint(rjson)
 
 # Parse netflix response
-print 'My List'
-print '-------'
+print "-------------------------------------"
 videos = rjson['value']['videos']
 for vid in videos:
     if vid.isnumeric():
