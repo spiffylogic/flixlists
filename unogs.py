@@ -60,19 +60,22 @@ data = '{"paths":'+base+'}'
 # Netflix API request
 response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false', data=data, headers=netflix_headers)
 rjson = response.json()
-#pprint(rjson)
 
 # Parse netflix response
 print "-------------------------------------"
-videos = rjson['value']['videos']
-for vid in videos:
-    if vid.isnumeric():
-        vo = videos[vid]
-        title = vo['title']
-        boxart = vo['boxarts']['_342x192']['jpg']['url']
-        isplayable = vo['availability']['isPlayable']
-        retjson = '{"netflixid":"'+str(vid)+'","title":"'+str(title)+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
-        print title
+value = rjson['value']
+videos = value.get('videos')
+if  videos:
+    for vid in videos:
+        if vid.isnumeric():
+            vo = videos[vid]
+            title = vo['title']
+            boxart = vo['boxarts']['_342x192']['jpg']['url']
+            isplayable = vo['availability']['isPlayable']
+            retjson = '{"netflixid":"'+str(vid)+'","title":"'+str(title)+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
+            print title
+else:
+    print 'No videos'
 
 print ""
 print "-------------------------------------"
