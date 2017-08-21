@@ -70,10 +70,10 @@ if  videos:
         if vid.isnumeric():
             vo = videos[vid]
             title = vo['title']
+            print title
             boxart = vo['boxarts']['_342x192']['jpg']['url']
             isplayable = vo['availability']['isPlayable']
-            retjson = '{"netflixid":"'+str(vid)+'","title":"'+str(title)+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
-            print title
+            retjson = '{"netflixid":"'+str(vid)+'","title":"'+title.encode('utf-8')+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
 else:
     print 'No videos'
 
