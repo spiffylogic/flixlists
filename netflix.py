@@ -53,13 +53,12 @@ rmax = '48'
 #base = '[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
 # Netflix search
-search = "intouchables"
-#base = '["search", "'+search+'", "titles", {from: 0, to: 48}, ["summary", "title"]],["search", "'+search'", "titles", {from: 0, to: 48}, "boxarts", "_342x192", "webp"],["search", "'+search+'", "titles", ["id", "length", "name", "trackIds", "requestId"]]'
+search = "Pelé"
 base = '[["search","'+search+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability"]],["search","'+search+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
-data = '{"paths":'+base+'}'
 
 # Netflix API request
-response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false', data=data, headers=netflix_headers)
+response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false',
+        data='{"paths":'+base+'}', headers=netflix_headers)
 rjson = response.json()
 
 # Parse netflix response
