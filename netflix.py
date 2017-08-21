@@ -1,4 +1,5 @@
 #!/usr/local/bin/python2
+# -*- coding: utf-8 -*-
 import json;
 import requests;
 import re;
