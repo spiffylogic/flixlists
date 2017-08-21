@@ -4,7 +4,7 @@ import json;
 import requests;
 import re;
 from pprint import pprint;
-import unogs
+import netflix
 
 imdb_user = 'ur34919593'
 imdb_url = 'http://www.imdb.com'
@@ -56,7 +56,7 @@ for i in range(2*page_size):
 
     ca = False
     if j >= 10 and j < 60:
-        ca = unogs.isAvailableInCanada(item_id)
+        ca = netflix.isAvailableInCanada(item_id)
     print str(j)+": "+item_id+": "+title+year_str+(' (NETFLIX)' if ca else '')
 
 # Subsequent pages are available from data endpoint
