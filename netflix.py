@@ -51,38 +51,45 @@ rmax = '48'
 # Netflix my list
 #base = '[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
-# Netflix search
-search = "Pelé"
-base = '[["search","'+search+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability"]],["search","'+search+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
+# Netflix API search request
+def search(q):
+    base = '[["search","'+q+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability"]],["search","'+q+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
+    response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false',
+            data='{"paths":'+base+'}', headers=netflix_headers)
+    rjson = response.json()
+    return rjson['value']
 
-# Netflix API request
-response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false',
-        data='{"paths":'+base+'}', headers=netflix_headers)
-rjson = response.json()
+# Returns true if the first result in a search for the title is an exact match
+def isAvailable(video_title):
+    value = search(video_title)
+    # Roughly, this is how the response is structured with respect to what we're looking for:
+    #   value/search/<q>/titles/0 -> ['videos',<ID>]
+    #   value/videos/<ID> -> {title: <q>}
+    s = value.get('search')
+    v = value.get('videos')
+    a = s[video_title]['titles']['0'] # first result
+    top_hit = v[a[1]]['title']
 
-# Parse netflix response
-print "-------------------------------------"
-value = rjson['value']
-videos = value.get('videos')
-if  videos:
-    for vid in videos:
-        if vid.isnumeric():
-            vo = videos[vid]
-            title = vo['title']
-            print title
-            boxart = vo['boxarts']['_342x192']['jpg']['url']
-            isplayable = vo['availability']['isPlayable']
-            retjson = '{"netflixid":"'+str(vid)+'","title":"'+title.encode('utf-8')+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
-else:
-    print 'No videos'
+    # Check if first result matches
+    return top_hit.lower() == video_title.lower()
 
-print ""
-print "-------------------------------------"
-print ""
+# Parse netflix videos response
+def parseVideos(value):
+    videos = value.get('videos')
+    if  videos:
+        for vid in videos:
+            if vid.isnumeric():
+                vo = videos[vid]
+                title = vo['title']
+                print title
+                boxart = vo['boxarts']['_342x192']['jpg']['url']
+                isplayable = vo['availability']['isPlayable']
+                retjson = '{"netflixid":"'+str(vid)+'","title":"'+title.encode('utf-8')+'","playable":'+str(isplayable)+',"boxart":"'+str(boxart)+'"}';
+    else:
+        print 'No videos'
 
-# Get country info from uNoGS
-
-def isAvailableInCanada(video_id):
+# Get country info from uNoGSi (don't do this anymore)
+def isAvailableInCanadaUNOGS(video_id):
     print video_id
     response = requests.get(unogs_url+'?t=loadvideo&q='+video_id, headers=unogs_headers)
     try:
@@ -96,3 +103,10 @@ def isAvailableInCanada(video_id):
         pass
     return False
 
+# ---------------------------------------------
+
+# Netflix search
+q = 'the bucket list'
+value = search(q)
+parseVideos(value)
+print isAvailable(q)
