@@ -23,27 +23,31 @@ unogs_url = 'https://unogs-unogs-v1.p.mashape.com/api.cgi'
 unogs_api_key = 'PMVIAK4mm1mshMVt7UUJH2uG57kSp1nuxnMjsnZWe4xqRF0Be8'
 unogs_headers = {'X-Mashape-Key': unogs_api_key, 'Accept': 'application/json'}
 
-# get additional login data from netflix
-response = requests.get(netflix_url, headers=netflix_headers)
-react_regex = "reactContext = (.*?);\\s*</script>"
-m = re.search(react_regex, response.content)
-react_context = m.group(1)
-react_context = react_context.replace('\\x', '\\u00') # https://stackoverflow.com/a/18233231/432311
-react_json = json.loads(react_context)
-data = react_json['models']['serverDefs']['data']
-netflix_api_url = data['SHAKTI_API_ROOT'] + '/' + data['BUILD_IDENTIFIER'] + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false'
+try:
+    # get additional login data from netflix
+    response = requests.get(netflix_url, headers=netflix_headers)
+    react_regex = "reactContext = (.*?);\\s*</script>"
+    m = re.search(react_regex, response.content)
+    react_context = m.group(1)
+    react_context = react_context.replace('\\x', '\\u00') # https://stackoverflow.com/a/18233231/432311
+    react_json = json.loads(react_context)
+    data = react_json['models']['serverDefs']['data']
+    netflix_api_url = data['SHAKTI_API_ROOT'] + '/' + data['BUILD_IDENTIFIER'] + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false'
 
-# netflix profile selection (WIP)
-falkorcache_regex = "(?<=falkorCache = )(.*?)(?=;</script>)"
-m = re.search(falkorcache_regex, response.content)
-falkor = m.group(1)
-falkor = falkor.replace('\\x', '\\u00') # https://stackoverflow.com/a/18233231/432311
-falkor_json = json.loads(falkor)
-profile_data = falkor_json['profiles']
-lolomo = falkor_json['lolomo'][1] # maybe this is used for loading recommendations
+    # netflix profile selection (WIP)
+    falkorcache_regex = "(?<=falkorCache = )(.*?)(?=;</script>)"
+    m = re.search(falkorcache_regex, response.content)
+    falkor = m.group(1)
+    falkor = falkor.replace('\\x', '\\u00') # https://stackoverflow.com/a/18233231/432311
+    falkor_json = json.loads(falkor)
+    profile_data = falkor_json['profiles']
+    lolomo = falkor_json['lolomo'][1] # maybe this is used for loading recommendations
 
-genres = '0,"to":1'
-rmax = '48'
+    genres = '0,"to":1'
+    rmax = '48'
+
+except:
+    print "Netflix initialization failed. Try refreshing your cookie."
 
 # uNoGS tutorial example
 #base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
