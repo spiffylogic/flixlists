@@ -31,7 +31,7 @@ react_context = m.group(1)
 react_context = react_context.replace('\\x', '\\u00') # https://stackoverflow.com/a/18233231/432311
 react_json = json.loads(react_context)
 data = react_json['models']['serverDefs']['data']
-netflix_api_url = data['SHAKTI_API_ROOT'] + '/' + data['BUILD_IDENTIFIER']
+netflix_api_url = data['SHAKTI_API_ROOT'] + '/' + data['BUILD_IDENTIFIER'] + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false'
 
 # netflix profile selection (WIP)
 falkorcache_regex = "(?<=falkorCache = )(.*?)(?=;</script>)"
@@ -48,16 +48,20 @@ rmax = '48'
 # uNoGS tutorial example
 #base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
+def postRequest(base):
+    response = requests.post(netflix_api_url, data='{"paths":'+base+'}', headers=netflix_headers)
+    rjson = response.json()
+    return rjson['value']
+
 # Netflix my list
-#base = '[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
+def list():
+    base = '[["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},["title","availability"]],["lolomonobillboard", "mylist", {"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
+    return postRequest(base)
 
 # Netflix API search request
 def search(q):
     base = '[["search","'+q+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability"]],["search","'+q+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
-    response = requests.post(netflix_api_url + '/pathEvaluator?withSize=true&materialize=true&model=harris&searchAPIV2=false',
-            data='{"paths":'+base+'}', headers=netflix_headers)
-    rjson = response.json()
-    return rjson['value']
+    return postRequest(base)
 
 # Returns true if the first result in a search for the title is an exact match
 def isAvailable(video_title):
@@ -102,11 +106,3 @@ def isAvailableInCanadaUNOGS(video_id):
     except ValueError:
         pass
     return False
-
-# ---------------------------------------------
-
-# Netflix search
-q = 'the bucket list'
-value = search(q)
-parseVideos(value)
-print isAvailable(q)
