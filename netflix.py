@@ -7,7 +7,7 @@ from pprint import pprint;
 # reference: https://forum.unogs.com/topic/9/part-2-a-simple-script-to-pull-information
 
 netflix_url = 'https://www.netflix.com/browse'
-cookie_file = open('netflix_cookie')
+cookie_file = open('netflix-cookie')
 netflix_cookie = cookie_file.read()[:-1] # strip newline character
 netflix_headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0',
