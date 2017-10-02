@@ -17,7 +17,7 @@ elif sys.argv[1] == 'netflix' and len(sys.argv) > 2:
     title = sys.argv[2]
     print 'Is ' + title + ' available on Netflix?'
     import netflix
-    print 'YES' if netflix.isAvailable(title) else 'NO'
+    print netflix.getAvailability(title)
 elif sys.argv[1] == 'imdb':
     print 'IMDb Watchlist:'
     import imdb

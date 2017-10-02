@@ -36,14 +36,7 @@ titles_json = react_json['titles']
 # this contains the first 100 titles of the watchlist
 #print("Found "+str(len(titles_json))+" titles in titles list")
 
-page_size = 50
-
-# First 2 pages available in titles json
-j = 0
-for i in range(2*page_size):
-    j = j+1
-    item_id = items[i]['const']
-    primary_json = titles_json[item_id]['primary']
+def printTitle(j, item_id, primary_json):
     title = primary_json['title']
     # Note: year not available for in-development films
     if 'year' in primary_json:
@@ -53,11 +46,21 @@ for i in range(2*page_size):
     print str(j)+": "+item_id+": "+title+year_str
 
     ca = False
-    if j >= 0 and j < 50:
-        #ca = netflix.isAvailableInCanadaUNOGS(item_id)
-        ca = netflix.isAvailable(title)
+    #ca = netflix.isAvailableInCanadaUNOGS(item_id)
+    a = netflix.getAvailability(title)
+    ca = a.get("available")
     if ca:
-        print '^ AVAILABLE ON NETFLIX'
+        endDate = a.get("endDate")
+        print '^ AVAILABLE ON NETFLIX' + ((' UNTIL ' + endDate) if endDate != None else '')
+
+page_size = 50
+
+# First 2 pages available in titles json
+j = 0
+for i in range(2*page_size):
+    j = j+1
+    item_id = items[i]['const']
+    printTitle(j, item_id, titles_json[item_id]['primary'])
 
 # Subsequent pages are available from data endpoint
 for page in range(2, len(items) / page_size + 1):
@@ -68,12 +71,4 @@ for page in range(2, len(items) / page_size + 1):
     data_json = response.json()
     for item_id in data_json:
         j = j+1
-        primary_json = data_json[item_id]['title']['primary']
-        title = primary_json['title']
-        # Note: year not available for in-development films
-        if 'year' in primary_json:
-            year_str = ' ('+primary_json['year'][0]+')'
-        else:
-            year_str = ''
-        print str(j)+": "+item_id+": "+title+year_str
-
+        printTitle(j, item_id, data_json[item_id]['title']['primary'])

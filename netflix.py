@@ -65,27 +65,35 @@ def list():
 
 # Netflix API search request
 def search(q):
-    base = '[["search","'+q+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability"]],["search","'+q+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
+    base = '[["search","'+q+'","titles",{"from":0,"to":'+rmax+'},["summary","title","availability", "availabilityEndDateNear"]],["search","'+q+'","titles",{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]'
     return postRequest(base)
 
 # Returns true if the first result in a search for the title is an exact match
-def isAvailable(video_title):
+def getAvailability(video_title):
     value = search(video_title)
     #parseVideos(value)
     # Roughly, this is how the response is structured with respect to what we're looking for:
     #   value/search/<q>/titles/0 -> ['videos',<ID>]
     #   value/videos/<ID> -> {title: <q>}
+    availability = {}
+
     try:
         s = value.get('search')
         v = value.get('videos')
         a = s[video_title]['titles']['0'] # first result
-        top_hit = v[a[1]]['title']
+        title = v[a[1]]['title']
+        available = title.lower() == video_title.lower() # confirm if we have a match
+        endDate = v[a[1]]['availabilityEndDateNear'] # this will be either a date string (if expiring soon) or a mysterious (useless) object otherwise
 
-        # Check if first result matches
-        return top_hit.lower() == video_title.lower()
+        availability = {}
+        availability["available"] = available
+        if isinstance(endDate, basestring):
+            availability["endDate"] = endDate
     except:
-        print "Something went wrong with " + video_title + ":", sys.exc_info()[0]
-        return False
+        print "Something went wrong with " + video_title
+        availability["available"] = False
+
+    return availability
 
 # Parse netflix videos response
 def parseVideos(value):
