@@ -6,13 +6,13 @@ import re;
 from pprint import pprint;
 import netflix
 
-imdb_user = 'ur34919593'
-imdb_url = 'http://www.imdb.com'
+# Enter your IMDb user ID here:
+imdb_user = 'ur12345678'
 
+imdb_url = 'http://www.imdb.com'
 # Note: the cookie isn't actually needed when using the username and public watchlist
 #cookie_file = open('imdb-cookie')
 #imdb_cookie = cookie_file.read()[:-1] # strip newline character
-
 imdb_headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
         #'Cookie': imdb_cookie,
