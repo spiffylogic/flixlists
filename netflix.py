@@ -3,6 +3,7 @@ import json;
 import requests;
 import re;
 from pprint import pprint;
+import sys;
 
 # reference: https://forum.unogs.com/topic/9/part-2-a-simple-script-to-pull-information
 
@@ -70,21 +71,26 @@ def search(q):
 # Returns true if the first result in a search for the title is an exact match
 def isAvailable(video_title):
     value = search(video_title)
+    #parseVideos(value)
     # Roughly, this is how the response is structured with respect to what we're looking for:
     #   value/search/<q>/titles/0 -> ['videos',<ID>]
     #   value/videos/<ID> -> {title: <q>}
-    s = value.get('search')
-    v = value.get('videos')
-    a = s[video_title]['titles']['0'] # first result
-    top_hit = v[a[1]]['title']
+    try:
+        s = value.get('search')
+        v = value.get('videos')
+        a = s[video_title]['titles']['0'] # first result
+        top_hit = v[a[1]]['title']
 
-    # Check if first result matches
-    return top_hit.lower() == video_title.lower()
+        # Check if first result matches
+        return top_hit.lower() == video_title.lower()
+    except:
+        print "Something went wrong with " + video_title + ":", sys.exc_info()[0]
+        return False
 
 # Parse netflix videos response
 def parseVideos(value):
     videos = value.get('videos')
-    if  videos:
+    if videos:
         for vid in videos:
             if vid.isnumeric():
                 vo = videos[vid]
