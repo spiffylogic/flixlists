@@ -1,8 +1,6 @@
 #!/usr/local/bin/python2
 
 import sys
-import netflix
-#import imdb
 
 def usage():
     print 'usage: flixlists <cmd>'
@@ -10,16 +8,19 @@ def usage():
 
 if len(sys.argv) < 2:
     usage()
-elif sys.argv[1] == 'netflix-list':
+elif sys.argv[1] == 'netflix' and len(sys.argv) == 2:
     print 'Netflix My List:'
+    import netflix
     value = netflix.list()
     netflix.parseVideos(value)
-elif sys.argv[1] == 'netflix-search' and len(sys.argv) > 2:
+elif sys.argv[1] == 'netflix' and len(sys.argv) > 2:
     title = sys.argv[2]
     print 'Is ' + title + ' available on Netflix?'
-    print netflix.isAvailable(title)
+    import netflix
+    print 'YES' if netflix.isAvailable(title) else 'NO'
 elif sys.argv[1] == 'imdb':
-    print 'Show IMDb Watchlist'
+    print 'IMDb Watchlist:'
+    import imdb
 else:
     usage()
 
