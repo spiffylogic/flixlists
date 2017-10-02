@@ -54,7 +54,8 @@ except:
 #base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
 
 def postRequest(base):
-    response = requests.post(netflix_api_url, data='{"paths":'+base+'}', headers=netflix_headers)
+    data ='{"paths":'+base.encode('ascii', 'ignore')+'}' # ignore special unicode characters in titles for now (e.g. WALL-E)
+    response = requests.post(netflix_api_url, data=data, headers=netflix_headers)
     rjson = response.json()
     return rjson['value']
 
