@@ -48,7 +48,7 @@ try:
     rmax = '48'
 
 except:
-    print "Netflix initialization failed. Try refreshing your cookie."
+    print "Netflix initialization failed. Refresh your cookie or check your internet connection"
 
 # uNoGS tutorial example
 #base='[["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},["title","availability"]],["newarrivals",{"from":'+genres+'},{"from":0,"to":'+rmax+'},"boxarts","_342x192","jpg"]]';
